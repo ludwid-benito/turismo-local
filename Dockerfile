@@ -60,8 +60,8 @@ RUN rm -f bootstrap/cache/*.php
 # ===============================
 # Limpiar caches Laravel
 # ===============================
-RUN php artisan config:clear \
- && php artisan cache:clear \
+RUN CACHE_STORE=file SESSION_DRIVER=file php artisan config:clear \
+ && CACHE_STORE=file SESSION_DRIVER=file php artisan cache:clear \
  && php artisan route:clear \
  && php artisan view:clear
 
