@@ -36,15 +36,15 @@ RUN docker-php-ext-install \
 RUN a2enmod rewrite
 
 # ===============================
-# Composer
-# ===============================
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# ===============================
 # Copiar proyecto
 # ===============================
 WORKDIR /var/www/html
 COPY . .
+
+# ===============================
+# Composer
+# ===============================
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # ===============================
 # Composer install (OBLIGATORIO)
@@ -52,9 +52,10 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # ===============================
-# Eliminar cualquier cache vieja
+# Limpiar cache vieja (SIN BD)
 # ===============================
 RUN rm -f bootstrap/cache/*.php
+
 
 # ===============================
 # Limpiar caches Laravel
