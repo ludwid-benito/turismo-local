@@ -19,6 +19,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ===============================
+# Instalar Composer
+# ===============================
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# ===============================
 # Extensiones PHP necesarias
 # ===============================
 RUN docker-php-ext-install \
