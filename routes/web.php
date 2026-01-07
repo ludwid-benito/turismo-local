@@ -120,12 +120,13 @@ require __DIR__.'/auth.php';
 // Ruta temporal para crear las tablas en la nube
 Route::get('/instalar-base-de-datos', function () {
     try {
-        // Ejecuta las migraciones (crea las tablas)
+        \Log::info('Iniciando migraciones');
         Artisan::call('migrate', ['--force' => true]);
-        
         $output = Artisan::output();
+        \Log::info('Migraciones completadas: ' . $output);
         return "<h1>¡Éxito! Tablas creadas:</h1><pre>" . $output . "</pre>";
     } catch (\Exception $e) {
+        \Log::error('Error en migraciones: ' . $e->getMessage());
         return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
     }
 });
