@@ -47,11 +47,6 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # ===============================
-# Composer install (OBLIGATORIO)
-# ===============================
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# ===============================
 # Limpiar cache vieja (SIN BD)
 # ===============================
 RUN rm -f bootstrap/cache/*.php
