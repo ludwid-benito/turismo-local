@@ -115,8 +115,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-require __DIR__.'/auth.php';
-
 // Ruta temporal para crear las tablas en la nube
 Route::get('/instalar-base-de-datos', function () {
     config(['session.driver' => 'array']); // Usar array para evitar base de datos
@@ -127,4 +125,6 @@ Route::get('/instalar-base-de-datos', function () {
     } catch (\Exception $e) {
         return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
     }
-})->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class);
+});
+
+require __DIR__.'/auth.php';
