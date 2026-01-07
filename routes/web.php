@@ -116,7 +116,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 */
 
 // Ruta temporal para crear las tablas en la nube
-Route::get('/instalar-base-de-datos', function () {
+Route::middleware([])->get('/instalar-base-de-datos', function () {
     config(['session.driver' => 'array']); // Usar array para evitar base de datos
     try {
         Artisan::call('migrate', ['--force' => true]);
