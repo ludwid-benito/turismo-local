@@ -121,13 +121,10 @@ require __DIR__.'/auth.php';
 Route::get('/instalar-base-de-datos', function () {
     config(['session.driver' => 'array']); // Usar array para evitar base de datos
     try {
-        \Log::info('Iniciando migraciones');
         Artisan::call('migrate', ['--force' => true]);
         $output = Artisan::output();
-        \Log::info('Migraciones completadas: ' . $output);
         return "<h1>¡Éxito! Tablas creadas:</h1><pre>" . $output . "</pre>";
     } catch (\Exception $e) {
-        \Log::error('Error en migraciones: ' . $e->getMessage());
         return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
     }
 })->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class);
