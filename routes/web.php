@@ -129,4 +129,4 @@ Route::get('/instalar-base-de-datos', function () {
         \Log::error('Error en migraciones: ' . $e->getMessage());
         return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
     }
-});
+})->withoutMiddleware(\Illuminate\Session\Middleware\StartSession::class);
