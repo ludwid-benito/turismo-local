@@ -1,31 +1,87 @@
+# ===============================
+# PHP 8.3 + Apache
+# ===============================
 FROM php:8.3-apache
 
-# Instalamos herramientas necesarias para Composer (zip, unzip, git)
+# ===============================
+# Dependencias del sistema
+# ===============================
 RUN apt-get update && apt-get install -y \
-    libpng-dev libonig-dev libxml2-dev libpq-dev \
-    zip unzip git curl
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libpq-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalamos extensiones de PHP para Laravel 12 y Postgres
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+# ===============================
+# Extensiones PHP necesarias
+# ===============================
+RUN docker-php-ext-install \
+    pdo_pgsql \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd
 
-# Habilitamos el módulo de reescritura de Apache
+# ===============================
+# Apache
+# ===============================
 RUN a2enmod rewrite
 
-# INSTALAMOS COMPOSER directamente en el contenedor
+# ===============================
+# Composer
+# ===============================
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiamos todos los archivos del proyecto al contenedor
-COPY . /var/www/html
+# ===============================
+# Copiar proyecto
+# ===============================
+WORKDIR /var/www/html
+COPY . .
 
-# EJECUTAMOS LA INSTALACIÓN DE LIBRERÍAS (Crea la carpeta vendor)
+# ===============================
+# Composer install (OBLIGATORIO)
+# ===============================
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Ajustamos permisos de carpetas críticas
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# ===============================
+# Eliminar cualquier cache vieja
+# ===============================
+RUN rm -f bootstrap/cache/*.php
 
-# Configuramos la carpeta pública
+# ===============================
+# Limpiar caches Laravel
+# ===============================
+RUN php artisan config:clear \
+ && php artisan cache:clear \
+ && php artisan route:clear \
+ && php artisan view:clear
+
+# ===============================
+# Permisos
+# ===============================
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# ===============================
+# Apache document root -> /public
+# ===============================
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+ && sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# ===============================
+# Puerto
+# ===============================
 EXPOSE 80
+
+# ===============================
+# Start Apache
+# ===============================
+CMD ["apache2-foreground"]
