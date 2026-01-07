@@ -116,8 +116,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 */
 
 require __DIR__.'/auth.php';
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
 
 // Ruta temporal para crear las tablas en la nube
 Route::get('/instalar-base-de-datos', function () {
