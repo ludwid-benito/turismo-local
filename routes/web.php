@@ -119,6 +119,7 @@ require __DIR__.'/auth.php';
 
 // Ruta temporal para crear las tablas en la nube
 Route::get('/instalar-base-de-datos', function () {
+    config(['session.driver' => 'array']); // Usar array para evitar base de datos
     try {
         \Log::info('Iniciando migraciones');
         Artisan::call('migrate', ['--force' => true]);
