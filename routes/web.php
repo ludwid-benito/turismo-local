@@ -115,16 +115,4 @@ Route::middleware(['auth', 'admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// Ruta temporal para crear las tablas en la nube
-Route::middleware([])->get('/instalar-base-de-datos', function () {
-    config(['session.driver' => 'array']); // Usar array para evitar base de datos
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        $output = Artisan::output();
-        return "<h1>¡Éxito! Tablas creadas:</h1><pre>" . $output . "</pre>";
-    } catch (\Exception $e) {
-        return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
-    }
-});
-
 require __DIR__.'/auth.php';
