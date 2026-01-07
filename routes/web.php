@@ -11,7 +11,6 @@ use App\Http\Controllers\EventoController;
 use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\ResenaController;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | RUTAS PÚBLICAS
