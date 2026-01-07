@@ -10,6 +10,8 @@ use App\Http\Controllers\EmergenciaController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\ResenaController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | RUTAS PÚBLICAS
@@ -115,3 +117,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
 */
 
 require __DIR__.'/auth.php';
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
+
+// Ruta temporal para crear las tablas en la nube
+Route::get('/instalar-base-de-datos', function () {
+    try {
+        // Ejecuta las migraciones (crea las tablas)
+        Artisan::call('migrate', ['--force' => true]);
+        
+        $output = Artisan::output();
+        return "<h1>¡Éxito! Tablas creadas:</h1><pre>" . $output . "</pre>";
+    } catch (\Exception $e) {
+        return "<h1>Error al crear tablas:</h1><pre>" . $e->getMessage() . "</pre>";
+    }
+});
